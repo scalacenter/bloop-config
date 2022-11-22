@@ -1,12 +1,15 @@
 import $ivy.`com.goyeau::mill-scalafix::0.2.11`
+import $ivy.`io.chris-kipp::mill-ci-release::0.1.3`
 
 import mill._
 import mill.scalalib._
+import mill.scalalib.publish._
 import mill.scalajslib._
 import mill.scalajslib.api.ModuleKind
 import mill.scalalib.scalafmt.ScalafmtModule
 
 import com.goyeau.mill.scalafix.ScalafixModule
+import io.kipp.mill.ci.release.CiReleaseModule
 
 val scala211 = "2.11.12"
 val scala212 = "2.12.17"
@@ -17,6 +20,27 @@ val scalaJSVersions = scalaVersions.map((_, "1.11.0"))
 val scalaNativeVersions = scalaVersions.map((_, "0.4.7"))
 
 val configName = "config"
+
+trait CommonPublish extends CiReleaseModule {
+
+  override def artifactName = "bloop-config"
+
+  override def pomSettings = PomSettings(
+    description = "Main method argument parser for Scala",
+    organization = "ch.epfl.scala",
+    url = "https://github.com/scalacenter/bloop-config",
+    licenses = Seq(License.`Apache-2.0`),
+    versionControl = VersionControl.github("scalacenter", "bloop-config"),
+    developers = Seq(
+      Developer(
+        "jvican",
+        "Jorge Vicente Cantero",
+        "https://github.com/jvican"
+      ),
+      Developer("Duhem", "Martin Duhem", "https://github.com/Duhemm")
+    )
+  )
+}
 
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
   def platform: String
@@ -58,7 +82,9 @@ trait CommonTest extends ScalaModule with TestModule.Munit {
 
 object config extends Module {
   object jvm extends Cross[ConfigJvmModule](scalaVersions: _*)
-  class ConfigJvmModule(val crossScalaVersion: String) extends Common {
+  class ConfigJvmModule(val crossScalaVersion: String)
+      extends Common
+      with CommonPublish {
     override def platform = "jvm"
 
     object test extends Tests with CommonTest {
@@ -69,7 +95,8 @@ object config extends Module {
   object js extends Cross[ConfigJsModule](scalaJSVersions: _*)
   class ConfigJsModule(val crossScalaVersion: String, crossJSVersion: String)
       extends Common
-      with ScalaJSModule {
+      with ScalaJSModule
+      with CommonPublish {
     override def platform = "js"
     override def scalaJSVersion = crossJSVersion
 
