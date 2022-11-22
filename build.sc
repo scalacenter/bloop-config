@@ -1,3 +1,4 @@
+import $ivy.`com.github.lolgab::mill-mima::0.0.13`
 import $ivy.`com.goyeau::mill-scalafix::0.2.11`
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.3`
 
@@ -8,6 +9,7 @@ import mill.scalajslib._
 import mill.scalajslib.api.ModuleKind
 import mill.scalalib.scalafmt.ScalafmtModule
 
+import com.github.lolgab.mill.mima._
 import com.goyeau.mill.scalafix.ScalafixModule
 import io.kipp.mill.ci.release.CiReleaseModule
 
@@ -21,9 +23,11 @@ val scalaNativeVersions = scalaVersions.map((_, "0.4.7"))
 
 val configName = "config"
 
-trait CommonPublish extends CiReleaseModule {
+trait CommonPublish extends CiReleaseModule with Mima {
 
   override def artifactName = "bloop-config"
+
+  override def mimaPreviousVersions = Seq("1.5.4")
 
   override def pomSettings = PomSettings(
     description = "Main method argument parser for Scala",
