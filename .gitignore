@@ -1,0 +1,6 @@
+.metals/
+.bsp/
+.bloop/
+.idea/
+out/
+*.worksheet.sc
