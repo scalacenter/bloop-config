@@ -30,7 +30,7 @@ trait CommonPublish extends CiReleaseModule with Mima {
   override def mimaPreviousVersions = Seq("1.5.4")
 
   override def pomSettings = PomSettings(
-    description = "Main method argument parser for Scala",
+    description = "Bloop configuration library.",
     organization = "ch.epfl.scala",
     url = "https://github.com/scalacenter/bloop-config",
     licenses = Seq(License.`Apache-2.0`),
