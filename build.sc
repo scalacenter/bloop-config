@@ -21,7 +21,10 @@ val scalaVersions = List(scala211, scala212, scala213)
 val scalaJSVersions = scalaVersions.map((_, "1.11.0"))
 val scalaNativeVersions = scalaVersions.map((_, "0.4.7"))
 
-val configName = "config"
+object Platforms {
+  val jvm = "jvm"
+  val js = "js"
+}
 
 trait CommonPublish extends CiReleaseModule with Mima {
 
@@ -47,9 +50,12 @@ trait CommonPublish extends CiReleaseModule with Mima {
 }
 
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
+
   def platform: String
 
-  override def millSourcePath = build.millSourcePath / configName
+  def moduleDir: String
+
+  override def millSourcePath = build.millSourcePath / moduleDir
 
   override def sources = T.sources(
     millSourcePath / "src",
@@ -89,10 +95,12 @@ object config extends Module {
   class ConfigJvmModule(val crossScalaVersion: String)
       extends Common
       with CommonPublish {
-    override def platform = "jvm"
+    override def platform = Platforms.jvm
+    override def moduleDir: String = "config"
 
     object test extends Tests with CommonTest {
-      override def platform = "jvm"
+      override def platform = Platforms.jvm
+      override def moduleDeps = Seq(configTestUtil.jvm())
     }
   }
 
@@ -101,12 +109,38 @@ object config extends Module {
       extends Common
       with ScalaJSModule
       with CommonPublish {
-    override def platform = "js"
+    override def platform = Platforms.js
+    override def moduleDir: String = "config"
     override def scalaJSVersion = crossJSVersion
 
     object test extends Tests with CommonTest {
-      override def platform = "js"
+      override def platform = Platforms.js
+      override def moduleDeps = Seq(configTestUtil.js())
       override def moduleKind = T { ModuleKind.CommonJSModule }
     }
+  }
+}
+
+object configTestUtil extends Module {
+  object jvm extends Cross[ConfigJvmModule](scalaVersions: _*)
+  class ConfigJvmModule(val crossScalaVersion: String)
+      extends Common
+      with CommonPublish {
+    override def platform = Platforms.jvm
+    override def moduleDir: String = "configTestUtil"
+    override def moduleDeps = Seq(config.jvm())
+    override def artifactName = super.artifactName() ++ "-test-util"
+  }
+
+  object js extends Cross[ConfigJsModule](scalaJSVersions: _*)
+  class ConfigJsModule(val crossScalaVersion: String, crossJSVersion: String)
+      extends Common
+      with ScalaJSModule
+      with CommonPublish {
+    override def platform = Platforms.js
+    override def moduleDir: String = "configTestUtil"
+    override def scalaJSVersion = crossJSVersion
+    override def moduleDeps = Seq(config.js())
+    override def artifactName = super.artifactName() ++ "-test-util"
   }
 }
