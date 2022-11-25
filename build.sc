@@ -99,7 +99,7 @@ object config extends Module {
       with CommonPublish
       with MimaCheck {
     override def platform = Platforms.jvm
-    override def moduleDir: String = "config"
+    override def moduleDir: String = config.toString()
 
     object test extends Tests with CommonTest {
       override def platform = Platforms.jvm
@@ -114,7 +114,7 @@ object config extends Module {
       with CommonPublish
       with MimaCheck {
     override def platform = Platforms.js
-    override def moduleDir: String = "config"
+    override def moduleDir: String = config.toString()
     override def scalaJSVersion = crossJSVersion
 
     object test extends Tests with CommonTest {
@@ -131,7 +131,7 @@ object configTestUtil extends Module {
       extends Common
       with CommonPublish {
     override def platform = Platforms.jvm
-    override def moduleDir: String = "configTestUtil"
+    override def moduleDir: String = configTestUtil.toString()
     override def moduleDeps = Seq(config.jvm())
     override def artifactName = super.artifactName() ++ "-test-util"
   }
@@ -142,7 +142,7 @@ object configTestUtil extends Module {
       with ScalaJSModule
       with CommonPublish {
     override def platform = Platforms.js
-    override def moduleDir: String = "configTestUtil"
+    override def moduleDir: String = configTestUtil.toString()
     override def scalaJSVersion = crossJSVersion
     override def moduleDeps = Seq(config.js())
     override def artifactName = super.artifactName() ++ "-test-util"
