@@ -1,4 +1,5 @@
 import $ivy.`com.github.lolgab::mill-mima::0.0.13`
+import $ivy.`com.github.lolgab::mill-crossplatform::0.0.3`
 import $ivy.`com.goyeau::mill-scalafix::0.2.11`
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.4`
 
@@ -10,6 +11,7 @@ import mill.scalajslib.api.ModuleKind
 import mill.scalalib.scalafmt.ScalafmtModule
 
 import com.github.lolgab.mill.mima._
+import com.github.lolgab.mill.crossplatform._
 import com.goyeau.mill.scalafix.ScalafixModule
 import io.kipp.mill.ci.release.CiReleaseModule
 
@@ -17,8 +19,9 @@ val scala211 = "2.11.12"
 val scala212 = "2.12.17"
 val scala213 = "2.13.10"
 
+val scalaJS1 = "1.11.0"
+
 val scalaVersions = List(scala211, scala212, scala213)
-val scalaJSVersions = scalaVersions.map((_, "1.11.0"))
 
 trait CommonPublish extends CiReleaseModule with Mima {
 
@@ -44,14 +47,6 @@ trait CommonPublish extends CiReleaseModule with Mima {
 }
 
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
-  def platform: String
-
-  override def millSourcePath = build.millSourcePath / "config"
-
-  override def sources = T.sources(
-    millSourcePath / "src",
-    millSourcePath / s"src-$platform"
-  )
 
   override def scalafixIvyDeps = Agg(
     ivy"com.github.liancheng::organize-imports:0.6.0"
@@ -71,38 +66,21 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 }
 
 trait CommonTest extends ScalaModule with TestModule.Munit {
-  def platform: String
-
   def ivyDeps = Agg(ivy"org.scalameta::munit::1.0.0-M7")
-
-  def sources = T.sources(
-    millSourcePath / "src",
-    millSourcePath / s"src-$platform"
-  )
 }
 
-object config extends Module {
-  object jvm extends Cross[ConfigJvmModule](scalaVersions: _*)
-  class ConfigJvmModule(val crossScalaVersion: String)
-      extends Common
-      with CommonPublish {
-    override def platform = "jvm"
-
-    object test extends Tests with CommonTest {
-      override def platform = "jvm"
-    }
+object config extends Cross[ConfigModule](scalaVersions: _*)
+class ConfigModule(val crossScalaVersion: String) extends CrossPlatform {
+  trait Shared
+      extends CrossPlatformCrossScalaModule
+      with Common
+      with CommonPublish
+  object jvm extends Shared {
+    object test extends CrossPlatformSources with Tests with CommonTest
   }
-
-  object js extends Cross[ConfigJsModule](scalaJSVersions: _*)
-  class ConfigJsModule(val crossScalaVersion: String, crossJSVersion: String)
-      extends Common
-      with ScalaJSModule
-      with CommonPublish {
-    override def platform = "js"
-    override def scalaJSVersion = crossJSVersion
-
-    object test extends Tests with CommonTest {
-      override def platform = "js"
+  object js extends Shared with ScalaJSModule {
+    override def scalaJSVersion = scalaJS1
+    object test extends CrossPlatformSources with Tests with CommonTest {
       override def moduleKind = T { ModuleKind.CommonJSModule }
     }
   }
