@@ -19,18 +19,20 @@ val scala213 = "2.13.10"
 
 val scalaVersions = List(scala211, scala212, scala213)
 val scalaJSVersions = scalaVersions.map((_, "1.11.0"))
-val scalaNativeVersions = scalaVersions.map((_, "0.4.7"))
 
 object Platforms {
   val jvm = "jvm"
   val js = "js"
 }
 
-trait CommonPublish extends CiReleaseModule with Mima {
+// NOTE: Once we publish configTestUtil we can move this down and mix it in with CommonPublish
+trait MimaCheck extends Mima {
+  override def mimaPreviousVersions = Seq("1.5.4")
+}
+
+trait CommonPublish extends CiReleaseModule {
 
   override def artifactName = "bloop-config"
-
-  override def mimaPreviousVersions = Seq("1.5.4")
 
   override def pomSettings = PomSettings(
     description = "Bloop configuration library.",
@@ -94,7 +96,8 @@ object config extends Module {
   object jvm extends Cross[ConfigJvmModule](scalaVersions: _*)
   class ConfigJvmModule(val crossScalaVersion: String)
       extends Common
-      with CommonPublish {
+      with CommonPublish
+      with MimaCheck {
     override def platform = Platforms.jvm
     override def moduleDir: String = "config"
 
@@ -108,7 +111,8 @@ object config extends Module {
   class ConfigJsModule(val crossScalaVersion: String, crossJSVersion: String)
       extends Common
       with ScalaJSModule
-      with CommonPublish {
+      with CommonPublish
+      with MimaCheck {
     override def platform = Platforms.js
     override def moduleDir: String = "config"
     override def scalaJSVersion = crossJSVersion
