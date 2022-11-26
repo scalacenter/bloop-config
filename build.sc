@@ -19,9 +19,6 @@ val scala213 = "2.13.10"
 
 val scalaVersions = List(scala211, scala212, scala213)
 val scalaJSVersions = scalaVersions.map((_, "1.11.0"))
-val scalaNativeVersions = scalaVersions.map((_, "0.4.7"))
-
-val configName = "config"
 
 trait CommonPublish extends CiReleaseModule with Mima {
 
@@ -49,7 +46,7 @@ trait CommonPublish extends CiReleaseModule with Mima {
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
   def platform: String
 
-  override def millSourcePath = build.millSourcePath / configName
+  override def millSourcePath = build.millSourcePath / "config"
 
   override def sources = T.sources(
     millSourcePath / "src",
