@@ -16,7 +16,7 @@ class ConfigCodecsSpec extends munit.FunSuite {
 
   def parseConfig(contents: String): Config.File = {
     bloop.config.read(contents.getBytes(StandardCharsets.UTF_8)) match {
-      case Right(file)     => file
+      case Right(file) => file
       case Left(throwable) => throw throwable
     }
   }
