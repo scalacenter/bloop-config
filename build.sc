@@ -15,7 +15,7 @@ import com.github.lolgab.mill.crossplatform._
 import com.goyeau.mill.scalafix.ScalafixModule
 import io.kipp.mill.ci.release.CiReleaseModule
 
-val scala212 = "2.12.17"
+val scala212 = "2.12.18"
 val scala213 = "2.13.10"
 
 val scalaJS1 = "1.11.0"
