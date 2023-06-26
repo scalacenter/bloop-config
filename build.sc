@@ -15,13 +15,12 @@ import com.github.lolgab.mill.crossplatform._
 import com.goyeau.mill.scalafix.ScalafixModule
 import io.kipp.mill.ci.release.CiReleaseModule
 
-val scala211 = "2.11.12"
 val scala212 = "2.12.17"
 val scala213 = "2.13.10"
 
 val scalaJS1 = "1.11.0"
 
-val scalaVersions = List(scala211, scala212, scala213)
+val scalaVersions = List(scala212, scala213)
 
 trait CommonPublish extends CiReleaseModule with Mima {
 
