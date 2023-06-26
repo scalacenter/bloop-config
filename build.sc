@@ -47,10 +47,6 @@ trait CommonPublish extends CiReleaseModule with Mima {
 
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 
-  override def scalafixIvyDeps = Agg(
-    ivy"com.github.liancheng::organize-imports:0.6.0"
-  )
-
   val jsoniterVersion = "2.4.0"
 
   override def ivyDeps = Agg(
