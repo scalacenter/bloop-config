@@ -1,5 +1,5 @@
 import $ivy.`com.github.lolgab::mill-mima::0.0.23`
-import $ivy.`com.github.lolgab::mill-crossplatform::0.2.2`
+import $ivy.`com.github.lolgab::mill-crossplatform::0.2.3`
 import $ivy.`com.goyeau::mill-scalafix::0.3.1`
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.9`
 
@@ -64,19 +64,20 @@ trait CommonTest extends ScalaModule with TestModule.Munit {
   def ivyDeps = Agg(ivy"org.scalameta::munit::1.0.0-M7")
 }
 
-object config extends Cross[ConfigModule](scalaVersions: _*)
-class ConfigModule(val crossScalaVersion: String) extends CrossPlatform {
+object config extends Cross[ConfigModule](scalaVersions)
+trait ConfigModule extends CrossPlatform {
   trait Shared
       extends CrossPlatformCrossScalaModule
       with Common
       with CommonPublish
+
   object jvm extends Shared {
-    object test extends CrossPlatformSources with Tests with CommonTest
+    object test extends CrossPlatformSources with ScalaTests with CommonTest
   }
+
   object js extends Shared with ScalaJSModule {
     override def scalaJSVersion = scalaJS1
-    object test extends CrossPlatformSources with Tests with CommonTest {
-      override def moduleKind = T { ModuleKind.CommonJSModule }
-    }
+    override def moduleKind = T { ModuleKind.CommonJSModule }
+    object test extends CrossPlatformSources with ScalaJSTests with CommonTest
   }
 }
