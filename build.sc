@@ -1,5 +1,5 @@
 import $ivy.`com.github.lolgab::mill-mima::0.0.24`
-import $ivy.`com.github.lolgab::mill-crossplatform::0.2.3`
+import $ivy.`com.github.lolgab::mill-crossplatform::0.2.4`
 import $ivy.`com.goyeau::mill-scalafix::0.3.1`
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.9`
 
