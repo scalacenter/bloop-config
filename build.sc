@@ -18,7 +18,7 @@ import io.kipp.mill.ci.release.CiReleaseModule
 val scala212 = "2.12.18"
 val scala213 = "2.13.12"
 
-val scalaJS1 = "1.11.0"
+val scalaJS1 = "1.12.0"
 
 val scalaVersions = List(scala212, scala213)
 
@@ -61,7 +61,7 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 }
 
 trait CommonTest extends ScalaModule with TestModule.Munit {
-  def ivyDeps = Agg(ivy"org.scalameta::munit::1.0.0-M7")
+  def ivyDeps = Agg(ivy"org.scalameta::munit::1.0.0-M10")
 }
 
 object config extends Cross[ConfigModule](scalaVersions)
