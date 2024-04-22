@@ -101,7 +101,8 @@ object Config {
       options: List[String],
       jars: List[Path],
       analysis: Option[Path],
-      setup: Option[CompileSetup]
+      setup: Option[CompileSetup],
+      bridgeJars: Option[List[Path]]
   )
 
   sealed abstract class Platform(val name: String) {
@@ -350,7 +351,8 @@ object Config {
             List("-warn"),
             List(),
             Some(outAnalysisFile),
-            Some(CompileSetup.empty)
+            Some(CompileSetup.empty),
+            None
           )
         ),
         Some(Java(List("-version"))),
