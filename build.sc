@@ -26,21 +26,7 @@ trait CommonPublish extends CiReleaseModule with Mima {
 
   override def artifactName = "bloop-config"
 
-  override def mimaPreviousVersions = Seq("1.5.4")
-
-  override def mimaBinaryIssueFilters =
-    Seq(
-      ProblemFilter.exclude[DirectMissingMethodProblem](
-        "bloop.config.Config#Scala.copy"
-      ),
-      ProblemFilter.exclude[DirectMissingMethodProblem](
-        "bloop.config.Config#Scala.this"
-      ),
-      ProblemFilter.exclude[DirectMissingMethodProblem](
-        "bloop.config.Config#Scala.apply"
-      ),
-      ProblemFilter.exclude[MissingTypesProblem]("bloop.config.Config$Scala$")
-    )
+  override def mimaPreviousVersions = Seq("2.0.0")
 
   override def pomSettings = PomSettings(
     description = "Bloop configuration library.",
