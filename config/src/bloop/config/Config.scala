@@ -164,10 +164,20 @@ object Config {
     val All: List[String] = List(NoModule.id, CommonJSModule.id, ESModule.id)
   }
 
+  sealed abstract class ModuleSplitStyleJS(val id: String)
+  object ModuleSplitStyleJS {
+    case object FewestModules extends ModuleSplitStyleJS("FewestModules")
+    case object SmallestModules extends ModuleSplitStyleJS("SmallestModules")
+    case object SmallModulesFor extends ModuleSplitStyleJS("SmallModulesFor")
+    val All: List[String] =
+      List(FewestModules.id, SmallestModules.id, SmallModulesFor.id)
+  }
+
   case class JsConfig(
       version: String,
       mode: LinkerMode,
       kind: ModuleKindJS,
+      moduleSplitStyle: Option[ModuleSplitStyleJS],
       emitSourceMaps: Boolean,
       jsdom: Option[Boolean],
       output: Option[Path],
@@ -181,6 +191,7 @@ object Config {
         "",
         LinkerMode.Debug,
         ModuleKindJS.NoModule,
+        None,
         false,
         None,
         None,
