@@ -2,6 +2,7 @@ package bloop.config
 
 import bloop.config.PlatformFiles.Path
 import bloop.config.PlatformFiles.emptyPath
+import scala.annotation.unroll
 
 object Config {
   case class Java(options: List[String])
@@ -177,12 +178,12 @@ object Config {
       version: String,
       mode: LinkerMode,
       kind: ModuleKindJS,
-      moduleSplitStyle: Option[ModuleSplitStyleJS],
       emitSourceMaps: Boolean,
       jsdom: Option[Boolean],
       output: Option[Path],
       nodePath: Option[Path],
-      toolchain: List[Path]
+      toolchain: List[Path],
+      @unroll moduleSplitStyle: Option[ModuleSplitStyleJS] = None
   ) extends PlatformConfig
 
   object JsConfig {
@@ -191,7 +192,6 @@ object Config {
         "",
         LinkerMode.Debug,
         ModuleKindJS.NoModule,
-        None,
         false,
         None,
         None,

@@ -48,9 +48,11 @@ trait CommonPublish extends CiReleaseModule with Mima {
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 
   val jsoniterVersion = "2.4.0"
+  val unrollVersion = "0.1.12"
 
   override def ivyDeps = Agg(
-    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core::$jsoniterVersion"
+    ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core::$jsoniterVersion",
+    ivy"com.lihaoyi::unroll-annotation:$unrollVersion"
   )
 
   override def compileIvyDeps = Agg(
@@ -58,6 +60,11 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
   )
 
   override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
+
+  override def scalacPluginIvyDeps = T {
+    super.scalacPluginIvyDeps() ++
+      Agg(ivy"com.lihaoyi::unroll-plugin:$unrollVersion")
+  }
 }
 
 trait CommonTest extends ScalaModule with TestModule.Munit {
