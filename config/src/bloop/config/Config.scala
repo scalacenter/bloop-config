@@ -1,8 +1,9 @@
 package bloop.config
 
+import scala.annotation.unroll
+
 import bloop.config.PlatformFiles.Path
 import bloop.config.PlatformFiles.emptyPath
-import scala.annotation.unroll
 
 object Config {
   case class Java(options: List[String])
