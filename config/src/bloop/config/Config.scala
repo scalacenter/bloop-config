@@ -1,5 +1,7 @@
 package bloop.config
 
+import scala.annotation.unroll
+
 import bloop.config.PlatformFiles.Path
 import bloop.config.PlatformFiles.emptyPath
 
@@ -164,6 +166,15 @@ object Config {
     val All: List[String] = List(NoModule.id, CommonJSModule.id, ESModule.id)
   }
 
+  sealed abstract class ModuleSplitStyleJS(val id: String)
+  object ModuleSplitStyleJS {
+    case object FewestModules extends ModuleSplitStyleJS("FewestModules")
+    case object SmallestModules extends ModuleSplitStyleJS("SmallestModules")
+    case object SmallModulesFor extends ModuleSplitStyleJS("SmallModulesFor")
+    val All: List[String] =
+      List(FewestModules.id, SmallestModules.id, SmallModulesFor.id)
+  }
+
   case class JsConfig(
       version: String,
       mode: LinkerMode,
@@ -172,7 +183,8 @@ object Config {
       jsdom: Option[Boolean],
       output: Option[Path],
       nodePath: Option[Path],
-      toolchain: List[Path]
+      toolchain: List[Path],
+      @unroll moduleSplitStyle: Option[ModuleSplitStyleJS] = None
   ) extends PlatformConfig
 
   object JsConfig {

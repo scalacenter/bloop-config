@@ -131,6 +131,48 @@ object ConfigCodecs {
     }
   }
 
+  implicit val codecModuleSplitStyleJS
+      : JsonValueCodec[Config.ModuleSplitStyleJS] = {
+    new JsonValueCodec[Config.ModuleSplitStyleJS] {
+      val nullValue: Config.ModuleSplitStyleJS =
+        null.asInstanceOf[Config.ModuleSplitStyleJS]
+      def encodeValue(x: Config.ModuleSplitStyleJS, out: JsonWriter): Unit = {
+        val str = x match {
+          case Config.ModuleSplitStyleJS.FewestModules =>
+            Config.ModuleSplitStyleJS.FewestModules.id
+          case Config.ModuleSplitStyleJS.SmallestModules =>
+            Config.ModuleSplitStyleJS.SmallestModules.id
+          case Config.ModuleSplitStyleJS.SmallModulesFor =>
+            Config.ModuleSplitStyleJS.SmallModulesFor.id
+        }
+        out.writeVal(str)
+      }
+      def decodeValue(
+          in: JsonReader,
+          default: Config.ModuleSplitStyleJS
+      ): Config.ModuleSplitStyleJS =
+        if (in.isNextToken('"')) {
+          in.rollbackToken()
+          in.readString(null) match {
+            case Config.ModuleSplitStyleJS.FewestModules.id =>
+              Config.ModuleSplitStyleJS.FewestModules
+            case Config.ModuleSplitStyleJS.SmallestModules.id =>
+              Config.ModuleSplitStyleJS.SmallestModules
+            case Config.ModuleSplitStyleJS.SmallModulesFor.id =>
+              Config.ModuleSplitStyleJS.SmallModulesFor
+            case _ =>
+              in.decodeError(
+                s"Expected module split style ${Config.ModuleSplitStyleJS.All
+                    .mkString("'", "', '", "'")}"
+              )
+          }
+        } else {
+          in.rollbackToken()
+          nullValue
+        }
+    }
+  }
+
   implicit val codecJvmConfig: JsonValueCodec[Config.JvmConfig] =
     JsonCodecMaker.makeWithRequiredCollectionFields[Config.JvmConfig]
 
