@@ -133,43 +133,72 @@ object ConfigCodecs {
 
   implicit val codecModuleSplitStyleJS
       : JsonValueCodec[Config.ModuleSplitStyleJS] = {
+    implicit val codecList: JsonValueCodec[List[String]] =
+      JsonCodecMaker.makeWithRequiredCollectionFields[List[String]]
     new JsonValueCodec[Config.ModuleSplitStyleJS] {
       val nullValue: Config.ModuleSplitStyleJS =
         null.asInstanceOf[Config.ModuleSplitStyleJS]
       def encodeValue(x: Config.ModuleSplitStyleJS, out: JsonWriter): Unit = {
-        val str = x match {
+        out.writeObjectStart()
+        out.writeKey("splitStyle")
+        x match {
           case Config.ModuleSplitStyleJS.FewestModules =>
-            Config.ModuleSplitStyleJS.FewestModules.id
+            out.writeVal(Config.ModuleSplitStyleJS.FewestModules.id)
           case Config.ModuleSplitStyleJS.SmallestModules =>
-            Config.ModuleSplitStyleJS.SmallestModules.id
+            out.writeVal(Config.ModuleSplitStyleJS.SmallestModules.id)
           case Config.ModuleSplitStyleJS.SmallModulesFor =>
-            Config.ModuleSplitStyleJS.SmallModulesFor.id
+            out.encodeError("Can not have SmallModulesFor without packages")
+          case Config.ModuleSplitStyleJS.SmallModulesFor(packages) =>
+            val style = Config.ModuleSplitStyleJS.SmallModulesFor(packages)
+            out.writeVal(style.id)
+            out.writeKey("packages")
+            out.writeArrayStart()
+            style.packages.foreach(out.writeVal)
+            out.writeArrayEnd()
         }
-        out.writeVal(str)
+        out.writeObjectEnd()
       }
+
       def decodeValue(
           in: JsonReader,
           default: Config.ModuleSplitStyleJS
-      ): Config.ModuleSplitStyleJS =
-        if (in.isNextToken('"')) {
-          in.rollbackToken()
-          in.readString(null) match {
-            case Config.ModuleSplitStyleJS.FewestModules.id =>
-              Config.ModuleSplitStyleJS.FewestModules
-            case Config.ModuleSplitStyleJS.SmallestModules.id =>
-              Config.ModuleSplitStyleJS.SmallestModules
-            case Config.ModuleSplitStyleJS.SmallModulesFor.id =>
-              Config.ModuleSplitStyleJS.SmallModulesFor
-            case _ =>
-              in.decodeError(
-                s"Expected module split style ${Config.ModuleSplitStyleJS.All
-                    .mkString("'", "', '", "'")}"
-              )
-          }
-        } else {
-          in.rollbackToken()
-          nullValue
+      ): Config.ModuleSplitStyleJS = {
+        in.setMark()
+        in.isNextToken('{')
+        in.skipToKey("splitStyle")
+        val splitStyle = in.readString(null)
+
+        val packages =
+          if (splitStyle == Config.ModuleSplitStyleJS.SmallModulesFor.id) {
+            in.nextToken()
+            if (in.skipToKey("packages")) {
+              if (in.isNextToken('[')) {
+                in.rollbackToken()
+                codecList.decodeValue(in, Nil) match {
+                  case Nil =>
+                    in.decodeError("Field package can not contain empty array")
+                  case packages => packages
+                }
+              } else {
+                in.decodeError("missing array of packages for field package")
+              }
+            } else {
+              in.requiredFieldError("Missing required field packages ")
+            }
+          } else List.empty
+
+        in.isNextToken('}')
+
+        splitStyle match {
+          case Config.ModuleSplitStyleJS.FewestModules.id =>
+            Config.ModuleSplitStyleJS.FewestModules
+          case Config.ModuleSplitStyleJS.SmallestModules.id =>
+            Config.ModuleSplitStyleJS.SmallestModules
+          case Config.ModuleSplitStyleJS.SmallModulesFor.id =>
+            Config.ModuleSplitStyleJS.SmallModulesFor(packages)
+          case _ => in.decodeError("Invalid splitStyle field")
         }
+      }
     }
   }
 
