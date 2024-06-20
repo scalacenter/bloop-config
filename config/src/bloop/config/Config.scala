@@ -172,7 +172,11 @@ object Config {
     case object SmallestModules extends ModuleSplitStyleJS("SmallestModules")
     final case class SmallModulesFor(packages: List[String])
         extends ModuleSplitStyleJS("SmallModulesFor")
-    object SmallModulesFor extends ModuleSplitStyleJS("SmallModulesFor")
+
+    object SmallModulesFor {
+      val id: String = SmallModulesFor(List.empty).id
+    }
+
     val All: List[String] =
       List(FewestModules.id, SmallestModules.id, SmallModulesFor.id)
   }

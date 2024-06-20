@@ -146,8 +146,6 @@ object ConfigCodecs {
             out.writeVal(Config.ModuleSplitStyleJS.FewestModules.id)
           case Config.ModuleSplitStyleJS.SmallestModules =>
             out.writeVal(Config.ModuleSplitStyleJS.SmallestModules.id)
-          case Config.ModuleSplitStyleJS.SmallModulesFor =>
-            out.encodeError("Can not have SmallModulesFor without packages")
           case Config.ModuleSplitStyleJS.SmallModulesFor(packages) =>
             val style = Config.ModuleSplitStyleJS.SmallModulesFor(packages)
             out.writeVal(style.id)
@@ -169,14 +167,18 @@ object ConfigCodecs {
         val splitStyle = in.readString(null)
 
         val packages =
-          if (splitStyle == Config.ModuleSplitStyleJS.SmallModulesFor.id) {
+          if (
+            splitStyle == Config.ModuleSplitStyleJS
+              .SmallModulesFor(List.empty)
+              .id
+          ) {
             in.nextToken()
             if (in.skipToKey("packages")) {
               if (in.isNextToken('[')) {
                 in.rollbackToken()
                 codecList.decodeValue(in, Nil) match {
                   case Nil =>
-                    in.decodeError("Field package can not contain empty array")
+                    in.decodeError("Field packages can not contain empty array")
                   case packages => packages
                 }
               } else {
