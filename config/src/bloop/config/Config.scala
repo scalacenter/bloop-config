@@ -319,7 +319,7 @@ object Config {
     final val LatestVersion = "1.4.0"
     private[bloop] val empty = File(LatestVersion, Project.empty)
 
-    private[bloop] def dummyForTests: File = {
+    private[bloop] def dummyForTests(platformType: String): File = {
       val workingDirectory = PlatformFiles.userDir
       val sourceFile = PlatformFiles.createTempFile("Foo", ".scala")
 
@@ -337,15 +337,33 @@ object Config {
       val classpath = List(scalaLibraryJar)
       val resources = Some(List(PlatformFiles.resolve(outDir, "resource1.xml")))
 
+      val jdk8Path = PlatformFiles.getPath("/usr/lib/jvm/java-8-jdk")
+      val jdk11Path = PlatformFiles.getPath("/usr/lib/jvm/java-11-jdk")
+
       val platform = {
-        val jdk8Path = PlatformFiles.getPath("/usr/lib/jvm/java-8-jdk")
-        val jdk11Path = PlatformFiles.getPath("/usr/lib/jvm/java-11-jdk")
         Platform.Jvm(
           JvmConfig(Some(jdk8Path), Nil),
           Some("module.Main"),
           Some(JvmConfig(Some(jdk11Path), Nil)),
           Some(classpath),
           resources
+        )
+      }
+
+      val platformJS = {
+        Platform.Js(
+          JsConfig(
+            "1.16.0",
+            LinkerMode.Release,
+            ModuleKindJS.ESModule,
+            false,
+            None,
+            None,
+            None,
+            List(jdk8Path),
+            Some(ModuleSplitStyleJS.SmallestModules)
+          ),
+          None
         )
       }
 
@@ -376,7 +394,11 @@ object Config {
         Some(Java(List("-version"))),
         Some(Sbt("1.1.0", Nil)),
         Some(Test(List(), TestOptions(Nil, Nil))),
-        Some(platform),
+        if (platformType == "JVM") {
+          Some(platform)
+        } else if (platformType == "JS") {
+          Some(platformJS)
+        } else None,
         Some(Resolution(Nil)),
         None,
         None
