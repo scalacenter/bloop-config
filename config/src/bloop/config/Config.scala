@@ -1,6 +1,7 @@
 package bloop.config
 
 import scala.annotation.unroll
+import scala.runtime.AbstractFunction3
 
 import bloop.config.PlatformFiles.Path
 import bloop.config.PlatformFiles.emptyPath
@@ -279,8 +280,18 @@ object Config {
   case class SourceGenerator(
       sourcesGlobs: List[SourcesGlobs],
       outputDirectory: Path,
-      command: List[String]
+      command: List[String],
+      @unroll unmanagedOutputs: List[Path] = Nil
   )
+
+  object SourceGenerator
+  // needed for binary compat with 2.0.2
+      extends AbstractFunction3[
+        List[SourcesGlobs],
+        Path,
+        List[String],
+        SourceGenerator
+      ]
 
   case class Project(
       name: String,
