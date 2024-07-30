@@ -281,7 +281,7 @@ object Config {
       sourcesGlobs: List[SourcesGlobs],
       outputDirectory: Path,
       command: List[String],
-      @unroll unmanagedOutputs: List[Path] = Nil
+      @unroll unmanagedInputs: List[Path] = Nil
   )
 
   object SourceGenerator
