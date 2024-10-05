@@ -17,16 +17,15 @@ import io.kipp.mill.ci.release.CiReleaseModule
 
 val scala212 = "2.12.19"
 val scala213 = "2.13.14"
+val scala3 = "3.3.4"
 
-val scalaJS1 = "1.16.0"
+val scalaJS1 = "1.17.0"
 
-val scalaVersions = List(scala212, scala213)
+val scalaVersions = List(scala212, scala213, scala3)
 
 trait CommonPublish extends CiReleaseModule with Mima {
 
   override def artifactName = "bloop-config"
-
-  override def mimaPreviousVersions = Seq("2.0.2")
 
   override def pomSettings = PomSettings(
     description = "Bloop configuration library.",
@@ -47,7 +46,7 @@ trait CommonPublish extends CiReleaseModule with Mima {
 
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 
-  val jsoniterVersion = "2.4.0"
+  val jsoniterVersion = "2.30.14"
   val unrollVersion = "0.1.12"
 
   override def ivyDeps = Agg(
@@ -72,11 +71,26 @@ trait CommonTest extends ScalaModule with TestModule.Munit {
 }
 
 object config extends Cross[ConfigModule](scalaVersions)
+
 trait ConfigModule extends CrossPlatform {
   trait Shared
       extends CrossPlatformCrossScalaModule
       with Common
-      with CommonPublish
+      with CommonPublish {
+
+    // note: somehow, this doesn't work (causes "Please override mimaPreviousVersions or mimaPreviousArtifacts")
+    // override def mimaPreviousVersions: Target[Seq[String]] =
+    //   T {
+    //     if (scalaVersion() == scala3) Seq.empty[String] else Seq("2.0.2")
+    //   }
+    // so we have to override mimaPreviousArtifacts fully:
+    // at least until the Scala 3 release is published.
+
+    override def mimaPreviousArtifacts: Target[Agg[Dep]] = T {
+      if (scalaVersion() == scala3) Agg.empty[Dep]
+      else Agg(ivy"ch.epfl.scala::bloop-config::2.0.2")
+    }
+  }
 
   object jvm extends Shared {
     object test extends CrossPlatformSources with ScalaTests with CommonTest
