@@ -1,3 +1,4 @@
+import os.Path
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import $ivy.`com.github.lolgab::mill-crossplatform::0.2.4`
 import $ivy.`com.goyeau::mill-scalafix::0.4.0`
@@ -49,6 +50,11 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
   val jsoniterVersion = "2.30.14"
   val unrollVersion = "0.1.12"
 
+  override def scalafixConfig: T[Option[Path]] = T {
+     if (scalaVersion() == scala3) Some(os.pwd / ".scalafix3.conf")
+     else Some(os.pwd / ".scalafix.conf")
+  }
+  
   override def ivyDeps = Agg(
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core::$jsoniterVersion",
     ivy"com.lihaoyi::unroll-annotation:$unrollVersion"
