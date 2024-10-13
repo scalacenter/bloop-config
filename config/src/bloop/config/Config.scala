@@ -1,7 +1,6 @@
 package bloop.config
 
 import scala.annotation.unroll
-import scala.runtime.AbstractFunction3
 
 import bloop.config.PlatformFiles.Path
 import bloop.config.PlatformFiles.emptyPath
@@ -284,14 +283,7 @@ object Config {
       @unroll unmanagedInputs: List[Path] = Nil
   )
 
-  object SourceGenerator
-  // needed for binary compat with 2.0.2
-      extends AbstractFunction3[
-        List[SourcesGlobs],
-        Path,
-        List[String],
-        SourceGenerator
-      ]
+  object SourceGenerator extends SourceGeneratorCompanionPlatform
 
   case class Project(
       name: String,
@@ -364,7 +356,7 @@ object Config {
       val platformJS = {
         Platform.Js(
           JsConfig(
-            "1.16.0",
+            "1.17.0",
             LinkerMode.Release,
             ModuleKindJS.ESModule,
             false,
