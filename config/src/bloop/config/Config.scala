@@ -227,13 +227,24 @@ object Config {
       linkStubs: Boolean,
       check: Boolean,
       dump: Boolean,
-      output: Option[Path]
+      output: Option[Path],
+      @unroll buildTarget: Option[NativeBuildTarget] = None
   ) extends PlatformConfig
 
   object NativeConfig {
     // FORMAT: OFF
     val empty: NativeConfig = NativeConfig("", LinkerMode.Debug, "", None, emptyPath, emptyPath, Nil, NativeOptions.empty, false, false, false, None)
     // FORMAT: ON
+  }
+
+  sealed abstract class NativeBuildTarget(val id: String)
+  object NativeBuildTarget {
+    case object Application extends NativeBuildTarget("application")
+    case object LibraryDynamic extends NativeBuildTarget("dynamic")
+    case object LibraryStatic extends NativeBuildTarget("static")
+
+    val All: List[String] =
+      List(Application.id, LibraryDynamic.id, LibraryStatic.id)
   }
 
   case class NativeOptions(linker: List[String], compiler: List[String])
