@@ -204,6 +204,46 @@ object ConfigCodecs {
     }
   }
 
+  implicit val codecNativBuildTarget
+      : JsonValueCodec[Config.NativeBuildTarget] = {
+    new JsonValueCodec[Config.NativeBuildTarget] {
+      val nullValue: Config.NativeBuildTarget =
+        null.asInstanceOf[Config.NativeBuildTarget]
+      def encodeValue(x: Config.NativeBuildTarget, out: JsonWriter): Unit = {
+        val str = x match {
+          case Config.NativeBuildTarget.Application =>
+            Config.NativeBuildTarget.Application.id
+          case Config.NativeBuildTarget.LibraryDynamic =>
+            Config.NativeBuildTarget.LibraryDynamic.id
+          case Config.NativeBuildTarget.LibraryStatic =>
+            Config.NativeBuildTarget.LibraryStatic.id
+        }
+        out.writeVal(str)
+      }
+      def decodeValue(
+          in: JsonReader,
+          default: Config.NativeBuildTarget
+      ): Config.NativeBuildTarget =
+        if (in.isNextToken('"')) {
+          in.rollbackToken()
+          in.readString(null) match {
+            case Config.NativeBuildTarget.Application.id =>
+              Config.NativeBuildTarget.Application
+            case Config.NativeBuildTarget.LibraryDynamic.id =>
+              Config.NativeBuildTarget.LibraryDynamic
+            case Config.NativeBuildTarget.LibraryStatic.id =>
+              Config.NativeBuildTarget.LibraryStatic
+            case _ =>
+              in.decodeError(
+                s"Expected build target ${Config.NativeBuildTarget.All.mkString("'", "', '", "'")}"
+              )
+          }
+        } else {
+          in.rollbackToken()
+          nullValue
+        }
+    }
+  }
   implicit val codecJvmConfig: JsonValueCodec[Config.JvmConfig] =
     JsonCodecMaker.makeWithRequiredCollectionFields[Config.JvmConfig]
 
