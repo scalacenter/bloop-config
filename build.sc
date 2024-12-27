@@ -59,7 +59,7 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros::$jsoniterVersion"
   )
 
-  override def scalacOptions = Seq("-Ywarn-unused", "-deprecation")
+  override def scalacOptions = Seq("-Ywarn-unused", "-deprecation", "-release", "8")
 
   override def scalacPluginIvyDeps = T {
     super.scalacPluginIvyDeps() ++
