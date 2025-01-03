@@ -204,6 +204,130 @@ object ConfigCodecs {
     }
   }
 
+  implicit val codecNativeLTO: JsonValueCodec[Config.NativeLTO] = {
+    new JsonValueCodec[Config.NativeLTO] {
+      val nullValue: Config.NativeLTO =
+        null.asInstanceOf[Config.NativeLTO]
+      def encodeValue(x: Config.NativeLTO, out: JsonWriter): Unit = {
+        val str = x match {
+          case Config.NativeLTO.None =>
+            Config.NativeLTO.None.id
+          case Config.NativeLTO.Thin =>
+            Config.NativeLTO.Thin.id
+          case Config.NativeLTO.Full =>
+            Config.NativeLTO.Full.id
+        }
+        out.writeVal(str)
+      }
+      def decodeValue(
+          in: JsonReader,
+          default: Config.NativeLTO
+      ): Config.NativeLTO =
+        if (in.isNextToken('"')) {
+          in.rollbackToken()
+          in.readString(null) match {
+            case Config.NativeLTO.None.id =>
+              Config.NativeLTO.None
+            case Config.NativeLTO.Thin.id =>
+              Config.NativeLTO.Thin
+            case Config.NativeLTO.Full.id =>
+              Config.NativeLTO.Full
+            case _ =>
+              in.decodeError(
+                s"Expected build target ${Config.NativeLTO.All.mkString("'", "', '", "'")}"
+              )
+          }
+        } else {
+          in.rollbackToken()
+          nullValue
+        }
+    }
+  }
+
+  implicit val codecNativeLinkerReleaseMode
+      : JsonValueCodec[Config.NativeLinkerReleaseMode] = {
+    new JsonValueCodec[Config.NativeLinkerReleaseMode] {
+      val nullValue: Config.NativeLinkerReleaseMode =
+        null.asInstanceOf[Config.NativeLinkerReleaseMode]
+      def encodeValue(
+          x: Config.NativeLinkerReleaseMode,
+          out: JsonWriter
+      ): Unit = {
+        val str = x match {
+          case Config.NativeLinkerReleaseMode.ReleaseFast =>
+            Config.NativeLinkerReleaseMode.ReleaseFast.id
+          case Config.NativeLinkerReleaseMode.ReleaseSize =>
+            Config.NativeLinkerReleaseMode.ReleaseSize.id
+          case Config.NativeLinkerReleaseMode.ReleaseFull =>
+            Config.NativeLinkerReleaseMode.ReleaseFull.id
+        }
+        out.writeVal(str)
+      }
+      def decodeValue(
+          in: JsonReader,
+          default: Config.NativeLinkerReleaseMode
+      ): Config.NativeLinkerReleaseMode =
+        if (in.isNextToken('"')) {
+          in.rollbackToken()
+          in.readString(null) match {
+            case Config.NativeLinkerReleaseMode.ReleaseFast.id =>
+              Config.NativeLinkerReleaseMode.ReleaseFast
+            case Config.NativeLinkerReleaseMode.ReleaseSize.id =>
+              Config.NativeLinkerReleaseMode.ReleaseSize
+            case Config.NativeLinkerReleaseMode.ReleaseFull.id =>
+              Config.NativeLinkerReleaseMode.ReleaseFull
+            case _ =>
+              in.decodeError(
+                s"Expected build target ${Config.NativeLinkerReleaseMode.All.mkString("'", "', '", "'")}"
+              )
+          }
+        } else {
+          in.rollbackToken()
+          nullValue
+        }
+    }
+  }
+
+  implicit val codecNativeSanitizer: JsonValueCodec[Config.NativeSanitizer] = {
+    new JsonValueCodec[Config.NativeSanitizer] {
+      val nullValue: Config.NativeSanitizer =
+        null.asInstanceOf[Config.NativeSanitizer]
+      def encodeValue(x: Config.NativeSanitizer, out: JsonWriter): Unit = {
+        val str = x match {
+          case Config.NativeSanitizer.AddressSanitizer =>
+            Config.NativeSanitizer.AddressSanitizer.id
+          case Config.NativeSanitizer.ThreadSanitizer =>
+            Config.NativeSanitizer.ThreadSanitizer.id
+          case Config.NativeSanitizer.UndefinedBehaviourSanitizer =>
+            Config.NativeSanitizer.UndefinedBehaviourSanitizer.id
+        }
+        out.writeVal(str)
+      }
+      def decodeValue(
+          in: JsonReader,
+          default: Config.NativeSanitizer
+      ): Config.NativeSanitizer =
+        if (in.isNextToken('"')) {
+          in.rollbackToken()
+          in.readString(null) match {
+            case Config.NativeSanitizer.AddressSanitizer.id =>
+              Config.NativeSanitizer.AddressSanitizer
+            case Config.NativeSanitizer.ThreadSanitizer.id =>
+              Config.NativeSanitizer.ThreadSanitizer
+            case Config.NativeSanitizer.UndefinedBehaviourSanitizer.id =>
+              Config.NativeSanitizer.UndefinedBehaviourSanitizer
+            case _ =>
+              in.decodeError(
+                s"Expected build target ${Config.NativeSanitizer.All.mkString("'", "', '", "'")}"
+              )
+          }
+        } else {
+          in.rollbackToken()
+          nullValue
+        }
+    }
+  }
+
   implicit val codecNativBuildTarget
       : JsonValueCodec[Config.NativeBuildTarget] = {
     new JsonValueCodec[Config.NativeBuildTarget] {
@@ -249,6 +373,11 @@ object ConfigCodecs {
 
   implicit val codecJsConfig: JsonValueCodec[Config.JsConfig] =
     JsonCodecMaker.makeWithRequiredCollectionFields[Config.JsConfig]
+
+  implicit val codecNativeOptimizerConfig
+      : JsonValueCodec[Config.NativeOptimizerConfig] =
+    JsonCodecMaker
+      .makeWithRequiredCollectionFields[Config.NativeOptimizerConfig]
 
   implicit val codecNativeConfig: JsonValueCodec[Config.NativeConfig] =
     JsonCodecMaker.makeWithRequiredCollectionFields[Config.NativeConfig]

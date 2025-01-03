@@ -228,13 +228,68 @@ object Config {
       check: Boolean,
       dump: Boolean,
       output: Option[Path],
-      @unroll buildTarget: Option[NativeBuildTarget] = None
+      @unroll buildTarget: Option[NativeBuildTarget] = None,
+      @unroll nativeLinkerReleaseMode: Option[NativeLinkerReleaseMode] = None,
+      @unroll lto: Option[NativeLTO] = None,
+      @unroll checkFatalWarnings: Boolean = false,
+      @unroll checkFeatures: Boolean = false,
+      @unroll sanitizer: Option[NativeSanitizer] = None,
+      @unroll optimize: Boolean = true,
+      @unroll useIncrementalCompilation: Boolean = true,
+      @unroll multithreading: Option[Boolean] = None,
+      @unroll embedResources: Boolean = false,
+      @unroll resourceIncludePatterns: List[String] = List("**"),
+      @unroll resourceExcludePatterns: List[String] = List.empty,
+      @unroll serviceProviders: Map[String, List[String]] = Map.empty,
+      @unroll baseName: String = "",
+      @unroll nativeOptimizerConfig: Option[NativeOptimizerConfig] = None
   ) extends PlatformConfig
+
+  case class NativeOptimizerConfig(
+      maxInlineDepth: Int,
+      maxCallerSize: Int,
+      maxCalleeSize: Int,
+      smallFunctionSize: Int
+  )
 
   object NativeConfig {
     // FORMAT: OFF
-    val empty: NativeConfig = NativeConfig("", LinkerMode.Debug, "", None, emptyPath, emptyPath, Nil, NativeOptions.empty, false, false, false, None)
+    val empty: NativeConfig = NativeConfig("", LinkerMode.Debug, "", None, emptyPath, emptyPath, Nil, NativeOptions.empty, false, false, false, None, None, None, None, false, false ,None ,true ,true, None, false, List("**"), List.empty, Map.empty, "", None)
     // FORMAT: ON
+  }
+
+  sealed abstract class NativeSanitizer(val id: String)
+  object NativeSanitizer {
+    case object AddressSanitizer extends NativeSanitizer("address")
+    case object ThreadSanitizer extends NativeSanitizer("thread")
+    case object UndefinedBehaviourSanitizer extends NativeSanitizer("undefined")
+
+    val All: List[String] =
+      List(
+        AddressSanitizer.id,
+        ThreadSanitizer.id,
+        UndefinedBehaviourSanitizer.id
+      )
+  }
+
+  sealed abstract class NativeLTO(val id: String)
+  object NativeLTO {
+    case object None extends NativeLTO("none")
+    case object Thin extends NativeLTO("none")
+    case object Full extends NativeLTO("none")
+
+    val All: List[String] =
+      List(None.id, Thin.id, Full.id)
+  }
+
+  sealed abstract class NativeLinkerReleaseMode(val id: String)
+  object NativeLinkerReleaseMode {
+    case object ReleaseFast extends NativeLinkerReleaseMode("release-fast")
+    case object ReleaseSize extends NativeLinkerReleaseMode("release-size")
+    case object ReleaseFull extends NativeLinkerReleaseMode("release-full")
+
+    val All: List[String] =
+      List(ReleaseFast.id, ReleaseSize.id, ReleaseFull.id)
   }
 
   sealed abstract class NativeBuildTarget(val id: String)
