@@ -229,21 +229,59 @@ object Config {
       dump: Boolean,
       output: Option[Path],
       @unroll buildTarget: Option[NativeBuildTarget] = None,
-      @unroll nativeLinkerReleaseMode: Option[NativeLinkerReleaseMode] = None,
-      @unroll lto: Option[NativeLTO] = None,
-      @unroll checkFatalWarnings: Boolean = false,
-      @unroll checkFeatures: Boolean = false,
       @unroll sanitizer: Option[NativeSanitizer] = None,
-      @unroll optimize: Boolean = true,
-      @unroll useIncrementalCompilation: Boolean = true,
-      @unroll multithreading: Option[Boolean] = None,
-      @unroll embedResources: Boolean = false,
-      @unroll resourceIncludePatterns: List[String] = List("**"),
-      @unroll resourceExcludePatterns: List[String] = List.empty,
+      @unroll nativeModeAndLTO: NativeModeAndLTO = NativeModeAndLTO.empty,
+      @unroll nativeFlags: NativeFlags = NativeFlags.empty,
+      @unroll nativeResourcePatterns: NativeResourcePatterns =
+        NativeResourcePatterns.empty,
       @unroll serviceProviders: Map[String, List[String]] = Map.empty,
       @unroll baseName: String = "",
       @unroll nativeOptimizerConfig: Option[NativeOptimizerConfig] = None
   ) extends PlatformConfig
+
+  object NativeConfig {
+    // FORMAT: OFF
+    val empty: NativeConfig = NativeConfig("", LinkerMode.Debug, "", None, emptyPath, emptyPath, Nil, NativeOptions.empty, false, false, false, None, None, None, NativeModeAndLTO.empty, NativeFlags.empty, NativeResourcePatterns.empty, Map.empty, "", None)
+    // FORMAT: ON
+  }
+
+  case class NativeModeAndLTO(
+      nativeLinkerReleaseMode: Option[NativeLinkerReleaseMode],
+      lto: Option[NativeLTO]
+  )
+
+  object NativeModeAndLTO {
+    def empty: NativeModeAndLTO = NativeModeAndLTO(None, None)
+  }
+  case class NativeResourcePatterns(
+      resourceIncludePatterns: List[String],
+      resourceExcludePatterns: List[String]
+  )
+
+  object NativeResourcePatterns {
+    def empty: NativeResourcePatterns =
+      NativeResourcePatterns(List("**"), List.empty)
+  }
+
+  case class NativeFlags(
+      checkFatalWarnings: Boolean,
+      checkFeatures: Boolean,
+      optimize: Boolean,
+      useIncrementalCompilation: Boolean,
+      embedResources: Boolean,
+      multithreading: Option[Boolean] = None
+  )
+
+  object NativeFlags {
+    def empty = NativeFlags(
+      checkFatalWarnings = false,
+      checkFeatures = false,
+      optimize = true,
+      useIncrementalCompilation = true,
+      embedResources = false,
+      multithreading = None
+    )
+  }
 
   case class NativeOptimizerConfig(
       maxInlineDepth: Int,
@@ -251,12 +289,6 @@ object Config {
       maxCalleeSize: Int,
       smallFunctionSize: Int
   )
-
-  object NativeConfig {
-    // FORMAT: OFF
-    val empty: NativeConfig = NativeConfig("", LinkerMode.Debug, "", None, emptyPath, emptyPath, Nil, NativeOptions.empty, false, false, false, None, None, None, None, false, false ,None ,true ,true, None, false, List("**"), List.empty, Map.empty, "", None)
-    // FORMAT: ON
-  }
 
   sealed abstract class NativeSanitizer(val id: String)
   object NativeSanitizer {

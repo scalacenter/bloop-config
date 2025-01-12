@@ -382,6 +382,19 @@ object ConfigCodecs {
   implicit val codecNativeConfig: JsonValueCodec[Config.NativeConfig] =
     JsonCodecMaker.makeWithRequiredCollectionFields[Config.NativeConfig]
 
+  implicit val codecNativeResourcePatterns
+      : JsonValueCodec[Config.NativeResourcePatterns] =
+    JsonCodecMaker
+      .makeWithRequiredCollectionFields[Config.NativeResourcePatterns]
+
+  implicit val codecNativeFlags: JsonValueCodec[Config.NativeFlags] =
+    JsonCodecMaker
+      .makeWithRequiredCollectionFields[Config.NativeFlags]
+
+  implicit val codecNativeModeAndLTO: JsonValueCodec[Config.NativeModeAndLTO] =
+    JsonCodecMaker
+      .makeWithRequiredCollectionFields[Config.NativeModeAndLTO]
+
   private case class MainClass(mainClass: Option[String])
   private implicit val codecMainClass: JsonValueCodec[MainClass] = {
     new JsonValueCodec[MainClass] {
