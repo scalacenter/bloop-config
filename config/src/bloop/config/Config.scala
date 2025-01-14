@@ -307,8 +307,8 @@ object Config {
   sealed abstract class NativeLTO(val id: String)
   object NativeLTO {
     case object None extends NativeLTO("none")
-    case object Thin extends NativeLTO("none")
-    case object Full extends NativeLTO("none")
+    case object Thin extends NativeLTO("thin")
+    case object Full extends NativeLTO("full")
 
     val All: List[String] =
       List(None.id, Thin.id, Full.id)
