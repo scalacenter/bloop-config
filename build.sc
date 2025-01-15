@@ -47,7 +47,7 @@ trait CommonPublish extends CiReleaseModule with Mima {
 
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 
-  val jsoniterVersion = "2.30.14"
+  val jsoniterVersion = "2.13.5.2"
   val unrollVersion = "0.1.12"
 
   override def scalafixConfig: T[Option[Path]] = T {
