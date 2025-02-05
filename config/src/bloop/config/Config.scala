@@ -46,8 +46,14 @@ object Config {
       )
     )
 
+    val TestNG: TestFramework = Config.TestFramework(
+      List(
+        "mill.testng.TestNGFramework"
+      )
+    )
+
     val DefaultFrameworks: List[TestFramework] =
-      List(JUnit, ScalaTest, ScalaCheck, Specs2, utest, munit)
+      List(JUnit, ScalaTest, ScalaCheck, Specs2, utest, munit, TestNG)
   }
 
   case class TestArgument(args: List[String], framework: Option[TestFramework])
