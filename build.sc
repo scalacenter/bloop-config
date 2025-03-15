@@ -16,7 +16,7 @@ import com.github.lolgab.mill.crossplatform._
 import com.goyeau.mill.scalafix.ScalafixModule
 import io.kipp.mill.ci.release.CiReleaseModule
 
-val scala212 = "2.12.19"
+val scala212 = "2.12.20"
 val scala213 = "2.13.14"
 val scala3 = "3.3.5"
 
