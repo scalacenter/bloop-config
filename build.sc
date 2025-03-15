@@ -2,7 +2,7 @@ import os.Path
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import $ivy.`com.github.lolgab::mill-crossplatform::0.2.4`
 import $ivy.`com.goyeau::mill-scalafix::0.4.0`
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.10`
+import $ivy.`io.chris-kipp::mill-ci-release::0.3.0`
 
 import mill._
 import mill.scalalib._
@@ -51,10 +51,10 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
   val unrollVersion = "0.1.12"
 
   override def scalafixConfig: T[Option[Path]] = T {
-     if (scalaVersion() == scala3) Some(os.pwd / ".scalafix3.conf")
-     else Some(os.pwd / ".scalafix.conf")
+    if (scalaVersion() == scala3) Some(os.pwd / ".scalafix3.conf")
+    else Some(os.pwd / ".scalafix.conf")
   }
-  
+
   override def ivyDeps = Agg(
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core::$jsoniterVersion",
     ivy"com.lihaoyi::unroll-annotation:$unrollVersion"
@@ -64,7 +64,8 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros::$jsoniterVersion"
   )
 
-  override def scalacOptions = Seq("-Ywarn-unused", "-deprecation", "-release", "8")
+  override def scalacOptions =
+    Seq("-Ywarn-unused", "-deprecation", "-release", "8")
 
   override def scalacPluginIvyDeps = T {
     super.scalacPluginIvyDeps() ++
