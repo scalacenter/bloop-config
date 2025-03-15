@@ -51,10 +51,10 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
   val unrollVersion = "0.1.12"
 
   override def scalafixConfig: T[Option[Path]] = T {
-     if (scalaVersion() == scala3) Some(os.pwd / ".scalafix3.conf")
-     else Some(os.pwd / ".scalafix.conf")
+    if (scalaVersion() == scala3) Some(os.pwd / ".scalafix3.conf")
+    else Some(os.pwd / ".scalafix.conf")
   }
-  
+
   override def ivyDeps = Agg(
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core::$jsoniterVersion",
     ivy"com.lihaoyi::unroll-annotation:$unrollVersion"
@@ -64,7 +64,8 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
     ivy"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros::$jsoniterVersion"
   )
 
-  override def scalacOptions = Seq("-Ywarn-unused", "-deprecation", "-release", "8")
+  override def scalacOptions =
+    Seq("-Ywarn-unused", "-deprecation", "-release", "8")
 
   override def scalacPluginIvyDeps = T {
     super.scalacPluginIvyDeps() ++
@@ -73,7 +74,7 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 }
 
 trait CommonTest extends ScalaModule with TestModule.Munit {
-  def ivyDeps = Agg(ivy"org.scalameta::munit::1.0.1")
+  def ivyDeps = Agg(ivy"org.scalameta::munit::1.0.4")
 }
 
 object config extends Cross[ConfigModule](scalaVersions)
