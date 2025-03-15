@@ -2,7 +2,7 @@ import os.Path
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import $ivy.`com.github.lolgab::mill-crossplatform::0.2.4`
 import $ivy.`com.goyeau::mill-scalafix::0.4.0`
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.10`
+import $ivy.`io.chris-kipp::mill-ci-release::0.3.0`
 
 import mill._
 import mill.scalalib._
