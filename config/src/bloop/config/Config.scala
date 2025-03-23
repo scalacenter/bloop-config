@@ -384,7 +384,8 @@ object Config {
       sourcesGlobs: List[SourcesGlobs],
       outputDirectory: Path,
       command: List[String],
-      @unroll unmanagedInputs: List[Path] = Nil
+      @unroll unmanagedInputs: List[Path] = Nil,
+      @unroll commandTemplate: Option[List[String]] = None
   )
 
   object SourceGenerator extends SourceGeneratorCompanionPlatform
