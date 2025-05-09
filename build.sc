@@ -18,7 +18,7 @@ import io.kipp.mill.ci.release.CiReleaseModule
 
 val scala212 = "2.12.20"
 val scala213 = "2.13.16"
-val scala3 = "3.3.5"
+val scala3 = "3.3.6"
 
 val scalaJS1 = "1.17.0"
 
