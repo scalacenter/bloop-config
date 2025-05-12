@@ -2,7 +2,7 @@ import os.Path
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import $ivy.`com.github.lolgab::mill-crossplatform::0.2.4`
 import $ivy.`com.goyeau::mill-scalafix::0.4.2`
-import $ivy.`io.chris-kipp::mill-ci-release::0.3.0`
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.0`
 
 import mill._
 import mill.scalalib._
@@ -14,7 +14,7 @@ import mill.scalalib.scalafmt.ScalafmtModule
 import com.github.lolgab.mill.mima._
 import com.github.lolgab.mill.crossplatform._
 import com.goyeau.mill.scalafix.ScalafixModule
-import io.kipp.mill.ci.release.CiReleaseModule
+import de.tobiasroeser.mill.vcs.version.VcsVersion
 
 val scala212 = "2.12.20"
 val scala213 = "2.13.16"
@@ -24,9 +24,11 @@ val scalaJS1 = "1.17.0"
 
 val scalaVersions = List(scala212, scala213, scala3)
 
-trait CommonPublish extends CiReleaseModule with Mima {
+trait CommonPublish extends Mima with PublishModule {
 
   override def artifactName = "bloop-config"
+
+  override def publishVersion: T[String] = VcsVersion.vcsState().format()
 
   override def pomSettings = PomSettings(
     description = "Bloop configuration library.",
@@ -95,7 +97,7 @@ trait ConfigModule extends CrossPlatform {
 
     override def mimaPreviousArtifacts: Target[Agg[Dep]] = T {
       if (scalaVersion() == scala3) Agg.empty[Dep]
-      else Agg(ivy"ch.epfl.scala::bloop-config::2.0.2")
+      else Agg(ivy"ch.epfl.scala::bloop-config::2.3.2")
     }
   }
 
