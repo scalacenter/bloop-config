@@ -15,7 +15,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - run: ./mill mill.scalalib.PublishModule/
+      - run: ./mill -i mill.scalalib.SonatypeCentralPublishModule/
         env:
           MILL_PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           MILL_PGP_SECRET_BASE64: ${{ secrets.PGP_SECRET }}
