@@ -24,7 +24,7 @@ val scalaJS1 = "1.17.0"
 
 val scalaVersions = List(scala212, scala213, scala3)
 
-trait CommonPublish extends Mima with PublishModule {
+trait CommonPublish extends Mima with SonatypeCentralPublishModule {
 
   override def artifactName = "bloop-config"
 
