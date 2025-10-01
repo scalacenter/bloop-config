@@ -196,7 +196,8 @@ object Config {
       output: Option[Path],
       nodePath: Option[Path],
       toolchain: List[Path],
-      @unroll moduleSplitStyle: Option[ModuleSplitStyleJS] = None
+      @unroll moduleSplitStyle: Option[ModuleSplitStyleJS] = None,
+      @unroll useWebAssembly: Boolean = false
   ) extends PlatformConfig
 
   object JsConfig {
