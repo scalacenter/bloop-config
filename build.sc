@@ -17,7 +17,7 @@ import com.goyeau.mill.scalafix.ScalafixModule
 import de.tobiasroeser.mill.vcs.version.VcsVersion
 
 val scala212 = "2.12.20"
-val scala213 = "2.13.16"
+val scala213 = "2.13.18"
 val scala3 = "3.3.7"
 
 val scalaJS1 = "1.17.0"
