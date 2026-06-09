@@ -50,7 +50,7 @@ trait CommonPublish extends Mima with SonatypeCentralPublishModule {
 trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 
   val jsoniterVersion = "2.13.5.2"
-  val unrollVersion = "0.1.12"
+  val unrollVersion = "0.2.0"
 
   override def scalafixConfig: T[Option[Path]] = T {
     if (scalaVersion() == scala3) Some(T.workspace / ".scalafix3.conf")
