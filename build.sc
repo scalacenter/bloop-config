@@ -16,11 +16,11 @@ import com.github.lolgab.mill.crossplatform._
 import com.goyeau.mill.scalafix.ScalafixModule
 import de.tobiasroeser.mill.vcs.version.VcsVersion
 
-val scala212 = "2.12.20"
-val scala213 = "2.13.16"
-val scala3 = "3.3.7"
+val scala212 = "2.12.21"
+val scala213 = "2.13.18"
+val scala3 = "3.3.8"
 
-val scalaJS1 = "1.17.0"
+val scalaJS1 = "1.21.0"
 
 val scalaVersions = List(scala212, scala213, scala3)
 
@@ -52,6 +52,8 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
   val jsoniterVersion = "2.13.5.2"
   val unrollVersion = "0.1.12"
 
+  override def semanticDbVersion = "4.15.2"
+
   override def scalafixConfig: T[Option[Path]] = T {
     if (scalaVersion() == scala3) Some(T.workspace / ".scalafix3.conf")
     else Some(T.workspace / ".scalafix.conf")
@@ -76,7 +78,7 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 }
 
 trait CommonTest extends ScalaModule with TestModule.Munit {
-  def ivyDeps = Agg(ivy"org.scalameta::munit::1.0.4")
+  def ivyDeps = Agg(ivy"org.scalameta::munit::1.3.3")
 }
 
 object config extends Cross[ConfigModule](scalaVersions)
