@@ -78,7 +78,7 @@ trait Common extends CrossScalaModule with ScalafmtModule with ScalafixModule {
 }
 
 trait CommonTest extends ScalaModule with TestModule.Munit {
-  def ivyDeps = Agg(ivy"org.scalameta::munit::1.3.3")
+  def ivyDeps = Agg(ivy"org.scalameta::munit::1.3.4")
 }
 
 object config extends Cross[ConfigModule](scalaVersions)
